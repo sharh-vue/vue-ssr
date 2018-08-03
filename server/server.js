@@ -36,7 +36,7 @@ app.use(function (req, res, next) {
   const context = { url: req.url }
   render2.renderToString(context, function(err, html){
     if(err){
-      res.send(err);
+      res.send(err.message);
       res.end();
       return
     }

@@ -14,6 +14,7 @@
     methods: {
       goUser(){
         this.count++;
+        this.$store.dispatch('CHANGE_NAME', 'name_'+this.count)
         this.$router.push('/users/'+this.count)
       }
     }

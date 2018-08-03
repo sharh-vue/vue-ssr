@@ -2,6 +2,9 @@ const webpackMerge = require('webpack-merge');
 const webpack = require('webpack');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const SWPrecachePlugin = require('sw-precache-webpack-plugin');
+
+
 const baseConfig = require("./base.config.js");
 const utils = require('./utils/index.js');
 const isDev = !process.env.BUILD_ENV;
@@ -59,6 +62,13 @@ module.exports = webpackMerge(baseConfig, {
   plugins: [
     new CleanWebpackPlugin(["build/dist"], {
       root: utils.resolve(__dirname, '..')
+    }),
+    new SWPrecachePlugin({
+      cacheId: 'my-project',
+      dontCacheBustUrlsMatching: /\.\w{8}\./,
+      filename: 'service-worker.js',
+      minify: true,
+      staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
