@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div>{{$route.params.id}}</div>
-    <button @click="goUser"></button>
+    <div>Number 2 {{$route.params.id}}</div>
+    <button @click="goUser">switch pages{{$store.state.name}}</button>
   </div>
 </template>
 <script type="text/javascript">

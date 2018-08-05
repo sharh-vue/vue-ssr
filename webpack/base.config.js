@@ -1,6 +1,6 @@
-const webpack = require('webpack');
-const path = require('path');
+
 const FriendLyErrorPlugin = require('friendly-errors-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 var DashboardPlugin = require('webpack-dashboard/plugin');
 
@@ -26,6 +26,21 @@ const getCssLoader = (importLoaders) => {
 }
 
 const isDev = !process.env.BUILD_ENV;
+
+let plugins = [
+  new FriendLyErrorPlugin(),
+  new DashboardPlugin(),
+  new VueLoaderPlugin()
+]
+
+if(!isDev){
+  plugins.push(
+    new MiniCssExtractPlugin({
+      filename: "css/[name].css",
+      chunkFilename: "css/chunks/[id].css"
+    })
+  )
+}
 
 module.exports = {
   mode: isDev ? 'development' : 'production',
@@ -61,15 +76,30 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [getCssLoader(), 'postcss-loader']
+        // 必须引入vue-style-loader，否则开发模式下无法注入css样式
+        use: [
+          isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
+          getCssLoader(), 
+          'postcss-loader'
+        ],
+        exclude: /node_modules/
       },
       {
         test: /\.less$/,
-        use: [getCssLoader(), 'less-loader']
+        use: [
+          isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 
+          getCssLoader(), 
+          'less-loader'
+        ]
       },
       {
         test: /\.postcss$/,
-        use: [getCssLoader(), 'postcss-loader']
+        use: [
+          isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
+          getCssLoader(), 
+          'postcss-loader'
+        ],
+        exclude: /node_modules/
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/,
@@ -97,9 +127,5 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new FriendLyErrorPlugin(),
-    new DashboardPlugin(),
-    new VueLoaderPlugin()
-  ]
+  plugins: plugins
 }

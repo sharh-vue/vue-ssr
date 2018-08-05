@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const SWPrecachePlugin = require('sw-precache-webpack-plugin');
-
+const WebpackBar = require('webpackbar')
 
 const baseConfig = require("./base.config.js");
 const utils = require('./utils/index.js');
@@ -11,7 +11,7 @@ const isDev = !process.env.BUILD_ENV;
 
 module.exports = webpackMerge(baseConfig, {
   entry: {
-    client: utils.resolve(__dirname, "../app/entry-client.js")
+    app: utils.resolve(__dirname, "../app/entry-client.js")
   },
   output: {
     path: utils.resolve(__dirname, "../build/dist")
@@ -45,7 +45,7 @@ module.exports = webpackMerge(baseConfig, {
       // 在一个入口（entry）最大的并行请求数
       maxInitialRequests: 3,
       automaticNameDelimiter: '~',
-      name: true,
+      name: false,
       cacheGroups: {
         vendors: {
           test: /[\\/]node_modules[\\/]/,
@@ -76,6 +76,9 @@ module.exports = webpackMerge(baseConfig, {
     }),
     new VueSSRClientPlugin({
       filename: '../vue-ssr-client-manifest.json'
+    }),
+    new WebpackBar({
+      name: 'client'
     })
   ]
 });

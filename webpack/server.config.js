@@ -1,14 +1,15 @@
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
+const WebpackBar = require('webpackbar');
 const webpackMerge = require('webpack-merge');
-const utils = require('./utils/index.js');
 
+const utils = require('./utils/index.js');
 const baseConfig = require('./base.config.js');
 
 module.exports = webpackMerge(baseConfig, {
   entry: {
-    server: utils.resolve(__dirname, '../app/entry-server.js')
+    app: utils.resolve(__dirname, '../app/entry-server.js')
   },
   // This allows webpack to handle dynamic imports in a Node-appropriate
   // fashion, and also tells `vue-loader` to emit server-oriented code when
@@ -37,6 +38,9 @@ module.exports = webpackMerge(baseConfig, {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.VUE_ENV': '"server"'
     }),
-    new VueSSRServerPlugin()
+    new VueSSRServerPlugin(),
+    new WebpackBar({
+      name: 'server'
+    })
   ]
 })
