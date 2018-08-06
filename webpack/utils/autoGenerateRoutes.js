@@ -49,7 +49,17 @@ function createRoute(filepath) {
     chunkName: routename,
     name: routename
   };
-  routes.push(route);
+  if(route.pathName === '404'){//404页面
+    route.pathName = '*';
+    routes.push(route);
+  }else if(route.pathName === 'index'){//首页
+    var indexRoute = Object.assign({}, route);
+    indexRoute.pathName = '';
+    routes.unshift(indexRoute);
+    routes.unshift(route);
+  }else{
+    routes.unshift(route);
+  }
   writeRoutes(routes);
 }
 /**

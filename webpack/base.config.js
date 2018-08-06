@@ -2,8 +2,6 @@
 const FriendLyErrorPlugin = require('friendly-errors-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-var DashboardPlugin = require('webpack-dashboard/plugin');
-
 const { VueLoaderPlugin } = require('vue-loader');
 const utils = require('./utils/index.js');
 
@@ -29,7 +27,6 @@ const isDev = !process.env.BUILD_ENV;
 
 let plugins = [
   new FriendLyErrorPlugin(),
-  new DashboardPlugin(),
   new VueLoaderPlugin()
 ]
 

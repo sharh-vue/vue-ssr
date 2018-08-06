@@ -3,9 +3,10 @@ const path = require('path')
 const MFS = require('memory-fs')
 const webpack = require('webpack')
 const chokidar = require('chokidar')
-const clientConfig = require('./webpack/client.config')
-const serverConfig = require('./webpack/server.config')
-
+const clientConfig = require('./webpack/client.config')()
+const serverConfig = require('./webpack/server.config')()
+// 自动生成路由
+require('./webpack/utils/autoGenerateRoutes')
 const readFile = (fs, file) => {
   console.log(path.join(__dirname, 'build'))
   try {

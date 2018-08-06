@@ -6,7 +6,7 @@ module.exports = {
     "precss": {},
     "postcss-import": {},
     "postcss-px2rem": {
-      remUnit: 20
+      remUnit: 75
     }
   }
 }

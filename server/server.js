@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 9500;
 
 
 app.use(morgan(isDev ? 'dev' : 'combined'))
-app.use('/static', Express.static(path.resolve(__dirname, '../static')))
+app.use(Express.static(path.resolve(__dirname, '../static')))
 app.use(Express.static(path.resolve(__dirname, '../build/dist')))
 
 if(isDev){

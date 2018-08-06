@@ -1,27 +1,46 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
-const indexPage = () => import(/* webpackChunkName: "pages_index" */'~/pages/index.vue')
-const userPage = () => import(/* webpackChunkName: "pages_user" */'~/pages/user.vue')
-
-
-export function createRouter(){
+export function createRouter() {
   return new Router({
-    mode: 'history',
+    mode: "history",
     fallback: false,
     routes: [
       {
-        path: "/",
-        component: indexPage,
-        name: "indexPage"
+        path: "/users/:id?",
+        component: () =>
+          import(/* webpackChunkName: "users__id" */ "~/pages/users/_id"),
+        name: "users__id"
       },
       {
-        path: "/users/:id?",
-        component: userPage,
-        name: "userPage"
+        path: "/user",
+        component: () => import(/* webpackChunkName: "user" */ "~/pages/user"),
+        name: "user"
+      },
+      {
+        path: "/demo",
+        component: () => import(/* webpackChunkName: "demo" */ "~/pages/demo"),
+        name: "demo"
+      },
+      {
+        path: "/index",
+        component: () =>
+          import(/* webpackChunkName: "index" */ "~/pages/index"),
+        name: "index"
+      },
+      {
+        path: "/",
+        component: () =>
+          import(/* webpackChunkName: "index" */ "~/pages/index"),
+        name: "index"
+      },
+      {
+        path: "/*",
+        component: () => import(/* webpackChunkName: "404" */ "~/pages/404"),
+        name: "404"
       }
     ]
-  })
+  });
 }
