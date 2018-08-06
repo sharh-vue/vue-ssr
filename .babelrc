@@ -1,0 +1,9 @@
+{
+  "presets": [
+    ["env", { "modules": false }]
+  ],
+  "plugins": [
+    // 使用webpack 动态import
+    "syntax-dynamic-import"
+  ]
+}
