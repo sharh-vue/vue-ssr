@@ -20,11 +20,6 @@ export function createRouter() {
         name: "user"
       },
       {
-        path: "/demo",
-        component: () => import(/* webpackChunkName: "demo" */ "~/pages/demo"),
-        name: "demo"
-      },
-      {
         path: "/index",
         component: () =>
           import(/* webpackChunkName: "index" */ "~/pages/index"),
@@ -34,7 +29,12 @@ export function createRouter() {
         path: "/",
         component: () =>
           import(/* webpackChunkName: "index" */ "~/pages/index"),
-        name: "index"
+        name: "baseIndex"
+      },
+      {
+        path: "/demo",
+        component: () => import(/* webpackChunkName: "demo" */ "~/pages/demo"),
+        name: "demo"
       },
       {
         path: "/*",

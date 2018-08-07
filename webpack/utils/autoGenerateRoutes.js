@@ -2,6 +2,7 @@ const chokidar = require("chokidar");
 const path = require('path');
 const fs = require('fs');
 const prettier = require("prettier");
+const glob = require('glob');
 
 const cwd = path.resolve(__dirname, '../../pages')
 let routes = [];
@@ -55,6 +56,7 @@ function createRoute(filepath) {
   }else if(route.pathName === 'index'){//首页
     var indexRoute = Object.assign({}, route);
     indexRoute.pathName = '';
+    indexRoute.name = 'baseIndex';
     routes.unshift(indexRoute);
     routes.unshift(route);
   }else{
@@ -124,4 +126,16 @@ function getRoutes(routes) {
     str.push(routeContent)
   }
   return str.join(',');
+}
+
+
+module.exports.buildRouter = function () {
+  glob.sync("**/*.vue", {cwd}, function (err, files) {
+    if(err){
+      return console.log(err);
+    }
+    files.map(async (filepath) => {
+      createRoute(filepath);
+    })
+  })
 }

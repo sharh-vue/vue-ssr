@@ -2,7 +2,6 @@ const webpackMerge = require('webpack-merge');
 const webpack = require('webpack');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const SWPrecachePlugin = require('sw-precache-webpack-plugin');
 const WebpackBar = require('webpackbar')
 const {GenerateSW} = require('workbox-webpack-plugin');
 
@@ -19,13 +18,13 @@ module.exports = function(){
       path: utils.resolve(__dirname, "../build/dist")
     },
     devtool: isDev ? "source-map" : "none",
-    devServer: {
-      contentBase: utils.resolve(__dirname, "../build"),
-      compress: true,
-      port: 9000,
-      host: "0.0.0.0",
-      disableHostCheck: true
-    },
+    // devServer: {
+    //   contentBase: utils.resolve(__dirname, "../build"),
+    //   compress: true,
+    //   port: 9000,
+    //   host: "0.0.0.0",
+    //   disableHostCheck: true
+    // },
     // 只在客服端进行这样处理，服务器端还是不要做这样处理，vue-ssr会报错
     optimization: {
       // 定义process.NODE_ENV到全局环境
@@ -85,14 +84,6 @@ module.exports = function(){
             name: 'common',
             priority: 20,
             reuseExistingChunk: true
-          },
-          async: {
-            priority: 30,
-            minChunks: 1,
-            name: 'async',
-            chunks: 'async',
-            // filename属性不能对已经加载的chunk来使用，不然会报错。
-            filename: "[name].[chunkhash:3].[ext]",
           }
         }
       }
@@ -104,19 +95,25 @@ module.exports = function(){
       // https://developers.google.com/web/tools/workbox/modules/workbox-webpack-plugin
       new GenerateSW({
         swDest: 'service-worker.js',
-        importWorkboxFrom: 'local'
+        importWorkboxFrom: 'local',
+        include: isDev ? [] : [/\.(png|jpeg|gif|svg|jpg|mp3|mp4|woff|ttf|woff2|html|css|js|html)$/],
+        // 不缓存热更新的文件
+        exclude: [/hot-update/],
+        // 缓存动态路径，比如api请求，页面等。开发模式下由于热更新，缓存页面会导致热更新文件请求不存在。需要注释掉
+        runtimeCaching: isDev ? [] : [
+          {
+            urlPattern: /^\/$/,
+            handler: 'networkFirst'
+          },
+          {
+            urlPattern: /users/,
+            handler: 'networkFirst'
+          }
+        ]
       }),
-      // new SWPrecachePlugin({
-      //   cacheId: 'my-project',
-      //   dontCacheBustUrlsMatching: /\.\w{8}\./,
-      //   filename: 'service-worker.js',
-      //   minify: !isDev,
-      //   stripPrefix: '/',
-      //   mergeStaticsConfig: true,
-      //   staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-      // }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+        'process.env.BUILD_ENV': JSON.stringify(process.env.BUILD_ENV || 'development'),
         'process.env.VUE_ENV': '"client"'
       }),
       new VueSSRClientPlugin({
@@ -130,7 +127,7 @@ module.exports = function(){
       new webpack.optimize.ModuleConcatenationPlugin(),
       new WebpackBar({
         name: 'client',
-        profile: true
+        profile: false
       })
     ]
   });

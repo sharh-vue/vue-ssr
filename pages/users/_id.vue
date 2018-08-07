@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>Number 2 {{$route.params.id}}</div>
+    <div class="div">Number 5df559 {{$route.params.id}}</div>
     <button @click="goUser">switch pages{{$store.state.name}}</button>
     <button @click="test">2</button>
     <img src="~assets/figure.png"/>
@@ -25,3 +25,8 @@
     }
   }
 </script>
+<style>
+.div{
+  font-size: 100px;
+}
+</style>
