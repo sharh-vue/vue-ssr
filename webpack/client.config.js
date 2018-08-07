@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackBar = require('webpackbar')
+const WebpackPwaManifest = require('webpack-pwa-manifest')
 const {GenerateSW} = require('workbox-webpack-plugin');
 
 const baseConfig = require("./base.config.js");
@@ -128,6 +129,12 @@ module.exports = function(){
       new WebpackBar({
         name: 'client',
         profile: false
+      }),
+      new WebpackPwaManifest({
+        name: 'My Progressive Web App',
+        short_name: 'MyPWA',
+        description: 'My awesome Progressive Web App!',
+        background_color: '#ffffff'
       })
     ]
   });

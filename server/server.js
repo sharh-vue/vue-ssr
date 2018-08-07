@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const Express = require('express');
-const Vue = require('vue');
 const VueServerRender = require('vue-server-renderer');
 const morgan = require('morgan');
+const LRU = require('lru-cache');
 
 const setupDevServer = require('../build.config');
 let render;
@@ -21,7 +21,7 @@ const isDev = !process.env.BUILD_ENV || process.env.NODE_ENV === 'development';
 const PORT = process.env.PORT || 9500;
 
 
-app.use(morgan(isDev ? 'dev' : 'combined'))
+app.use(morgan(isDev ? 'dev' : 'tiny'))
 app.use(Express.static(path.resolve(__dirname, '../static')))
 app.use(Express.static(path.resolve(__dirname, '../build/dist')))
 
@@ -30,6 +30,10 @@ if(isDev){
 }else{
   render = createBundleRenderer(require('../build/vue-ssr-server-bundle.json'), {
     runInNewContext: false, // 推荐
+    cache: LRU({
+      max: 1000,
+      maxAge: 1000 * 60 * 15
+    }),
     template: fs.readFileSync(path.resolve(__dirname, '../app.template.html'), 'utf-8'), // （可选）页面模板
     clientManifest: require('../build/vue-ssr-client-manifest.json') // （可选）客户端构建 manifest
   })

@@ -24,6 +24,10 @@ const getCssLoader = (importLoaders) => {
 }
 
 const isDev = !process.env.BUILD_ENV;
+const isServer = process.env.SERVER;
+const isClient = process.env.CLIENT;
+
+console.log( process.env.SERVER)
 
 let plugins = [
   new FriendLyErrorPlugin(),
@@ -75,7 +79,7 @@ module.exports = {
         test: /\.css$/,
         // 必须引入vue-style-loader，否则开发模式下无法注入css样式
         use: [
-          isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
+          isDev ? 'vue-style-loader' : isServer ? 'null-loader' : MiniCssExtractPlugin.loader,
           getCssLoader(), 
           'postcss-loader'
         ],
@@ -84,7 +88,7 @@ module.exports = {
       {
         test: /\.less$/,
         use: [
-          isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader, 
+          isDev ? 'vue-style-loader' : isServer ? 'null-loader' : MiniCssExtractPlugin.loader, 
           getCssLoader(), 
           'less-loader'
         ]
@@ -92,7 +96,9 @@ module.exports = {
       {
         test: /\.postcss$/,
         use: [
-          isDev ? 'vue-style-loader' : MiniCssExtractPlugin.loader,
+          // MiniCssExtractPlugin.loader在Server模式下不正常的问题，会导致构建失败
+          // https://github.com/vuejs/vue-loader/issues/1239
+          isDev ? 'vue-style-loader' : isServer ? 'null-loader' : MiniCssExtractPlugin.loader,
           getCssLoader(), 
           'postcss-loader'
         ],

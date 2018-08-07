@@ -6,23 +6,24 @@ const glob = require('glob');
 
 const cwd = path.resolve(__dirname, '../../pages')
 let routes = [];
-
-// 监听文件目录
-chokidar
-  .watch("**/*", {
-    // 设定工作目录为pages目录
-    cwd: cwd
-  })
-  // 当添加文件监听的时候会触发此回调，目录下的文件都会被监听
-  .on("add", function(filepath) {
-    // console.log("add", filepath);
-    createRoute(filepath);
-  })
-  // 文件被删除的时候触发此回调
-  .on("unlink", function(filepath) {
-    // console.log("unlink", filepath);
-    removeRoute(filepath);
-  });
+if(!process.env.BUILD_ENV){
+  // 监听文件目录
+  chokidar
+    .watch("**/*", {
+      // 设定工作目录为pages目录
+      cwd: cwd
+    })
+    // 当添加文件监听的时候会触发此回调，目录下的文件都会被监听
+    .on("add", function(filepath) {
+      // console.log("add", filepath);
+      createRoute(filepath);
+    })
+    // 文件被删除的时候触发此回调
+    .on("unlink", function(filepath) {
+      // console.log("unlink", filepath);
+      removeRoute(filepath);
+    });
+}
 
 /**
  * 创建路由
@@ -130,7 +131,7 @@ function getRoutes(routes) {
 
 
 module.exports.buildRouter = function () {
-  glob.sync("**/*.vue", {cwd}, function (err, files) {
+  glob("**/*.vue", {cwd}, function (err, files) {
     if(err){
       return console.log(err);
     }
